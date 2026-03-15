@@ -1,806 +1,1233 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MCP Security Checklist</title>
-  <meta name="description" content="A practical, community-maintained security checklist for teams building and deploying Model Context Protocol (MCP) servers and AI agent infrastructure." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #090b0e;
-      --bg-card: #0f1318;
-      --bg-hover: #141920;
-      --border: #1e2530;
-      --border-light: #252f3d;
-      --teal: #00C2B2;
-      --teal-dim: rgba(0,194,178,0.12);
-      --teal-glow: rgba(0,194,178,0.05);
-      --red: #ff4757;
-      --amber: #ffa502;
-      --text: #c8d4e0;
-      --text-muted: #5a6a7a;
-      --text-bright: #e8f0f8;
-      --mono: 'IBM Plex Mono', monospace;
-      --sans: 'IBM Plex Sans', sans-serif;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: var(--sans);
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      min-height: 100vh;
-    }
-
-    /* GRID OVERLAY */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(0,194,178,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,194,178,0.025) 1px, transparent 1px);
-      background-size: 48px 48px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* NAV */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(9,11,14,0.92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 56px;
-    }
-
-    .nav-logo {
-      font-family: var(--mono);
-      font-size: 0.8rem;
-      color: var(--teal);
-      letter-spacing: 0.1em;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .nav-logo::before {
-      content: '▸';
-      opacity: 0.6;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 1.5rem;
-      list-style: none;
-    }
-
-    .nav-links a {
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      text-decoration: none;
-      letter-spacing: 0.06em;
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover { color: var(--teal); }
-
-    .nav-github {
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      color: var(--teal);
-      text-decoration: none;
-      border: 1px solid rgba(0,194,178,0.3);
-      padding: 0.3rem 0.75rem;
-      border-radius: 2px;
-      transition: all 0.2s;
-    }
-
-    .nav-github:hover {
-      background: var(--teal-dim);
-    }
-
-    /* HERO */
-    .hero {
-      position: relative;
-      z-index: 1;
-      padding: 6rem 2rem 4rem;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .hero-tag {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      color: var(--teal);
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .hero-tag::before {
-      content: '';
-      display: inline-block;
-      width: 24px;
-      height: 1px;
-      background: var(--teal);
-    }
-
-    h1 {
-      font-family: var(--mono);
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      font-weight: 600;
-      color: var(--text-bright);
-      line-height: 1.15;
-      letter-spacing: -0.02em;
-      margin-bottom: 1.5rem;
-    }
-
-    h1 span {
-      color: var(--teal);
-    }
-
-    .hero-desc {
-      font-size: 1.05rem;
-      color: var(--text);
-      max-width: 600px;
-      line-height: 1.7;
-      margin-bottom: 2.5rem;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .btn-primary {
-      font-family: var(--mono);
-      font-size: 0.8rem;
-      background: var(--teal);
-      color: #090b0e;
-      text-decoration: none;
-      padding: 0.7rem 1.4rem;
-      border-radius: 2px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      transition: opacity 0.2s;
-    }
-
-    .btn-primary:hover { opacity: 0.85; }
-
-    .btn-secondary {
-      font-family: var(--mono);
-      font-size: 0.8rem;
-      border: 1px solid var(--border-light);
-      color: var(--text);
-      text-decoration: none;
-      padding: 0.7rem 1.4rem;
-      border-radius: 2px;
-      letter-spacing: 0.05em;
-      transition: all 0.2s;
-    }
-
-    .btn-secondary:hover {
-      border-color: var(--teal);
-      color: var(--teal);
-    }
-
-    /* STATS BAR */
-    .stats-bar {
-      position: relative;
-      z-index: 1;
-      max-width: 900px;
-      margin: 0 auto 4rem;
-      padding: 0 2rem;
-      display: flex;
-      gap: 2px;
-    }
-
-    .stat {
-      flex: 1;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      padding: 1rem 1.25rem;
-      border-top: 2px solid var(--teal);
-    }
-
-    .stat-value {
-      font-family: var(--mono);
-      font-size: 1.6rem;
-      font-weight: 600;
-      color: var(--teal);
-      line-height: 1;
-      margin-bottom: 0.25rem;
-    }
-
-    .stat-label {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    /* MAIN CONTENT */
-    .main {
-      position: relative;
-      z-index: 1;
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0 2rem 6rem;
-    }
-
-    /* TOP 10 */
-    .section-label {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      color: var(--teal);
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .section-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-
-    h2 {
-      font-family: var(--mono);
-      font-size: 1.3rem;
-      color: var(--text-bright);
-      margin-bottom: 1.5rem;
-      font-weight: 500;
-    }
-
-    .top10-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 4rem;
-    }
-
-    @media (max-width: 600px) {
-      .top10-grid { grid-template-columns: 1fr; }
-    }
-
-    .top10-item {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      padding: 0.85rem 1rem;
-      display: flex;
-      align-items: flex-start;
-      gap: 0.75rem;
-      transition: border-color 0.2s;
-    }
-
-    .top10-item:hover {
-      border-color: var(--border-light);
-    }
-
-    .top10-num {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      color: var(--teal);
-      opacity: 0.6;
-      min-width: 20px;
-      padding-top: 2px;
-    }
-
-    .top10-text {
-      font-size: 0.82rem;
-      color: var(--text);
-      line-height: 1.4;
-    }
-
-    /* CATEGORIES */
-    .categories { display: flex; flex-direction: column; gap: 12px; }
-
-    .category-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      overflow: hidden;
-    }
-
-    .category-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem 1.25rem;
-      cursor: pointer;
-      transition: background 0.15s;
-      user-select: none;
-    }
-
-    .category-header:hover {
-      background: var(--bg-hover);
-    }
-
-    .category-header-left {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .category-icon {
-      font-size: 1rem;
-      width: 32px;
-      text-align: center;
-    }
-
-    .category-name {
-      font-family: var(--mono);
-      font-size: 0.85rem;
-      color: var(--text-bright);
-      font-weight: 500;
-    }
-
-    .category-meta {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .risk-badge {
-      font-family: var(--mono);
-      font-size: 0.62rem;
-      padding: 0.2rem 0.5rem;
-      border-radius: 2px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-weight: 600;
-    }
-
-    .risk-critical {
-      background: rgba(255,71,87,0.12);
-      color: var(--red);
-      border: 1px solid rgba(255,71,87,0.25);
-    }
-
-    .risk-high {
-      background: rgba(255,165,2,0.1);
-      color: var(--amber);
-      border: 1px solid rgba(255,165,2,0.2);
-    }
-
-    .item-count {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      color: var(--text-muted);
-    }
-
-    .chevron {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      transition: transform 0.2s;
-    }
-
-    .category-card.open .chevron {
-      transform: rotate(90deg);
-    }
-
-    .category-body {
-      display: none;
-      border-top: 1px solid var(--border);
-    }
-
-    .category-card.open .category-body {
-      display: block;
-    }
-
-    .checklist-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.75rem;
-      padding: 0.7rem 1.25rem;
-      border-bottom: 1px solid var(--border);
-      transition: background 0.12s;
-    }
-
-    .checklist-item:last-child {
-      border-bottom: none;
-    }
-
-    .checklist-item:hover {
-      background: var(--teal-glow);
-    }
-
-    .check-box {
-      width: 14px;
-      height: 14px;
-      border: 1px solid var(--border-light);
-      border-radius: 2px;
-      flex-shrink: 0;
-      margin-top: 3px;
-      cursor: pointer;
-      transition: all 0.15s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.55rem;
-      color: transparent;
-    }
-
-    .checklist-item.checked .check-box {
-      background: var(--teal);
-      border-color: var(--teal);
-      color: #090b0e;
-    }
-
-    .checklist-item.checked .item-control {
-      color: var(--text-muted);
-      text-decoration: line-through;
-      text-decoration-color: var(--text-muted);
-    }
-
-    .item-control {
-      font-size: 0.82rem;
-      color: var(--text);
-      line-height: 1.45;
-      flex: 1;
-    }
-
-    .item-rationale {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      margin-top: 0.2rem;
-      line-height: 1.4;
-    }
-
-    .item-id {
-      font-family: var(--mono);
-      font-size: 0.6rem;
-      color: var(--text-muted);
-      opacity: 0.5;
-      margin-top: 0.25rem;
-    }
-
-    /* PROGRESS */
-    .progress-bar-wrap {
-      margin-bottom: 3rem;
-    }
-
-    .progress-header {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.5rem;
-    }
-
-    .progress-label {
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      letter-spacing: 0.06em;
-    }
-
-    .progress-count {
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      color: var(--teal);
-    }
-
-    .progress-bar {
-      height: 3px;
-      background: var(--border);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: var(--teal);
-      border-radius: 2px;
-      transition: width 0.3s ease;
-      width: 0%;
-    }
-
-    /* FOOTER */
-    footer {
-      position: relative;
-      z-index: 1;
-      border-top: 1px solid var(--border);
-      padding: 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: gap;
-    }
-
-    .footer-left {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      color: var(--text-muted);
-    }
-
-    .footer-left a {
-      color: var(--teal);
-      text-decoration: none;
-    }
-
-    .footer-right {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      color: var(--text-muted);
-      display: flex;
-      gap: 1.5rem;
-    }
-
-    .footer-right a {
-      color: var(--text-muted);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-
-    .footer-right a:hover { color: var(--teal); }
-
-    /* RESET BUTTON */
-    .reset-btn {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 0.4rem 0.75rem;
-      cursor: pointer;
-      border-radius: 2px;
-      transition: all 0.2s;
-    }
-
-    .reset-btn:hover {
-      border-color: var(--red);
-      color: var(--red);
-    }
-  </style>
-</head>
-<body>
-
-<nav>
-  <a class="nav-logo" href="#">MCP Security Checklist</a>
-  <ul class="nav-links">
-    <li><a href="#checklist">Checklist</a></li>
-    <li><a href="https://github.com/helixar-ai/mcp-security-checklist/blob/main/checklist.json">JSON</a></li>
-    <li><a href="https://github.com/helixar-ai/mcp-security-checklist/blob/main/checklist.yaml">YAML</a></li>
-    <li><a href="https://github.com/helixar-ai/mcp-security-checklist/blob/main/CONTRIBUTING.md">Contribute</a></li>
-  </ul>
-  <a class="nav-github" href="https://github.com/helixar-ai/mcp-security-checklist" target="_blank">★ Star on GitHub</a>
-</nav>
-
-<header class="hero">
-  <div class="hero-tag">Community Security Resource</div>
-  <h1>MCP Security<br><span>Checklist</span></h1>
-  <p class="hero-desc">
-    A practical, community-maintained security baseline for teams building and deploying
-    Model Context Protocol servers and AI agent infrastructure.
-    Vendor-neutral. Free to use. Open to contributions.
-  </p>
-  <div class="hero-actions">
-    <a href="#checklist" class="btn-primary">Start Checklist</a>
-    <a href="https://github.com/helixar-ai/mcp-security-checklist" class="btn-secondary" target="_blank">View on GitHub</a>
-  </div>
-</header>
-
-<div class="stats-bar">
-  <div class="stat">
-    <div class="stat-value">6</div>
-    <div class="stat-label">Security Domains</div>
-  </div>
-  <div class="stat">
-    <div class="stat-value" id="total-count">40</div>
-    <div class="stat-label">Total Controls</div>
-  </div>
-  <div class="stat">
-    <div class="stat-value">2</div>
-    <div class="stat-label">Critical Categories</div>
-  </div>
-  <div class="stat">
-    <div class="stat-value">3</div>
-    <div class="stat-label">Audience Tiers</div>
-  </div>
-</div>
-
-<main class="main" id="checklist">
-
-  <!-- TOP 10 -->
-  <div class="section-label">Quick Start</div>
-  <h2>Top 10 Controls</h2>
-  <div class="top10-grid">
-    <div class="top10-item"><span class="top10-num">01</span><span class="top10-text">Never expose MCP over the public internet without mTLS or equivalent.</span></div>
-    <div class="top10-item"><span class="top10-num">02</span><span class="top10-text">Scope every tool to the minimum necessary permissions.</span></div>
-    <div class="top10-item"><span class="top10-num">03</span><span class="top10-text">Validate and sanitize all inputs before they reach tool execution.</span></div>
-    <div class="top10-item"><span class="top10-num">04</span><span class="top10-text">Log every tool invocation with the originating session context.</span></div>
-    <div class="top10-item"><span class="top10-num">05</span><span class="top10-text">Set rate limits on both the MCP server and any downstream APIs it calls.</span></div>
-    <div class="top10-item"><span class="top10-num">06</span><span class="top10-text">Treat agent sessions as untrusted by default — validate intent, not just tokens.</span></div>
-    <div class="top10-item"><span class="top10-num">07</span><span class="top10-text">Separate read and write tools; require explicit approval for write ops in sensitive contexts.</span></div>
-    <div class="top10-item"><span class="top10-num">08</span><span class="top10-text">Rotate credentials used by MCP servers on a defined schedule.</span></div>
-    <div class="top10-item"><span class="top10-num">09</span><span class="top10-text">Monitor for behavioral anomalies: unusual tool chains, high-frequency calls, off-hours access.</span></div>
-    <div class="top10-item"><span class="top10-num">10</span><span class="top10-text">Conduct a tool inventory review before every production deployment.</span></div>
-  </div>
-
-  <!-- PROGRESS -->
-  <div class="progress-bar-wrap">
-    <div class="progress-header">
-      <span class="progress-label">YOUR PROGRESS</span>
-      <span class="progress-count" id="progress-text">0 / 0 completed</span>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MCP Security Checklist</title>
+    <meta
+      name="description"
+      content="A practical, community-maintained security checklist for teams building and deploying Model Context Protocol (MCP) servers and AI agent infrastructure."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #090b0e;
+        --bg-card: #0f1318;
+        --bg-hover: #141920;
+        --border: #1e2530;
+        --border-light: #252f3d;
+        --teal: #00c2b2;
+        --teal-dim: rgba(0, 194, 178, 0.12);
+        --teal-glow: rgba(0, 194, 178, 0.05);
+        --red: #ff4757;
+        --amber: #ffa502;
+        --text: #c8d4e0;
+        --text-muted: #5a6a7a;
+        --text-bright: #e8f0f8;
+        --mono: "IBM Plex Mono", monospace;
+        --sans: "IBM Plex Sans", sans-serif;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--sans);
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        min-height: 100vh;
+      }
+
+      /* GRID OVERLAY */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(0, 194, 178, 0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 194, 178, 0.025) 1px, transparent 1px);
+        background-size: 48px 48px;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* NAV */
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(9, 11, 14, 0.92);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 56px;
+      }
+
+      .nav-logo {
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        color: var(--teal);
+        letter-spacing: 0.1em;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .nav-logo::before {
+        content: "▸";
+        opacity: 0.6;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 1.5rem;
+        list-style: none;
+      }
+
+      .nav-links a {
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        letter-spacing: 0.06em;
+        transition: color 0.2s;
+      }
+
+      .nav-links a:hover {
+        color: var(--teal);
+      }
+
+      .nav-github {
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        color: var(--teal);
+        text-decoration: none;
+        border: 1px solid rgba(0, 194, 178, 0.3);
+        padding: 0.3rem 0.75rem;
+        border-radius: 2px;
+        transition: all 0.2s;
+      }
+
+      .nav-github:hover {
+        background: var(--teal-dim);
+      }
+
+      /* HERO */
+      .hero {
+        position: relative;
+        z-index: 1;
+        padding: 6rem 2rem 4rem;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      .hero-tag {
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        color: var(--teal);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .hero-tag::before {
+        content: "";
+        display: inline-block;
+        width: 24px;
+        height: 1px;
+        background: var(--teal);
+      }
+
+      h1 {
+        font-family: var(--mono);
+        font-size: clamp(2rem, 5vw, 3.2rem);
+        font-weight: 600;
+        color: var(--text-bright);
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        margin-bottom: 1.5rem;
+      }
+
+      h1 span {
+        color: var(--teal);
+      }
+
+      .hero-desc {
+        font-size: 1.05rem;
+        color: var(--text);
+        max-width: 600px;
+        line-height: 1.7;
+        margin-bottom: 2.5rem;
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .btn-primary {
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        background: var(--teal);
+        color: #090b0e;
+        text-decoration: none;
+        padding: 0.7rem 1.4rem;
+        border-radius: 2px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        transition: opacity 0.2s;
+      }
+
+      .btn-primary:hover {
+        opacity: 0.85;
+      }
+
+      .btn-secondary {
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        border: 1px solid var(--border-light);
+        color: var(--text);
+        text-decoration: none;
+        padding: 0.7rem 1.4rem;
+        border-radius: 2px;
+        letter-spacing: 0.05em;
+        transition: all 0.2s;
+      }
+
+      .btn-secondary:hover {
+        border-color: var(--teal);
+        color: var(--teal);
+      }
+
+      /* STATS BAR */
+      .stats-bar {
+        position: relative;
+        z-index: 1;
+        max-width: 900px;
+        margin: 0 auto 4rem;
+        padding: 0 2rem;
+        display: flex;
+        gap: 2px;
+      }
+
+      .stat {
+        flex: 1;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        padding: 1rem 1.25rem;
+        border-top: 2px solid var(--teal);
+      }
+
+      .stat-value {
+        font-family: var(--mono);
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: var(--teal);
+        line-height: 1;
+        margin-bottom: 0.25rem;
+      }
+
+      .stat-label {
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      /* MAIN CONTENT */
+      .main {
+        position: relative;
+        z-index: 1;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 2rem 6rem;
+      }
+
+      /* TOP 10 */
+      .section-label {
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        color: var(--teal);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .section-label::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+
+      h2 {
+        font-family: var(--mono);
+        font-size: 1.3rem;
+        color: var(--text-bright);
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+      }
+
+      .top10-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 4rem;
+      }
+
+      @media (max-width: 600px) {
+        .top10-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .top10-item {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        padding: 0.85rem 1rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        transition: border-color 0.2s;
+      }
+
+      .top10-item:hover {
+        border-color: var(--border-light);
+      }
+
+      .top10-num {
+        font-family: var(--mono);
+        font-size: 0.65rem;
+        color: var(--teal);
+        opacity: 0.6;
+        min-width: 20px;
+        padding-top: 2px;
+      }
+
+      .top10-text {
+        font-size: 0.82rem;
+        color: var(--text);
+        line-height: 1.4;
+      }
+
+      /* CATEGORIES */
+      .categories {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .category-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+
+      .category-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.25rem;
+        cursor: pointer;
+        transition: background 0.15s;
+        user-select: none;
+      }
+
+      .category-header:hover {
+        background: var(--bg-hover);
+      }
+
+      .category-header-left {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .category-icon {
+        font-size: 1rem;
+        width: 32px;
+        text-align: center;
+      }
+
+      .category-name {
+        font-family: var(--mono);
+        font-size: 0.85rem;
+        color: var(--text-bright);
+        font-weight: 500;
+      }
+
+      .category-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .risk-badge {
+        font-family: var(--mono);
+        font-size: 0.62rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 2px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 600;
+      }
+
+      .risk-critical {
+        background: rgba(255, 71, 87, 0.12);
+        color: var(--red);
+        border: 1px solid rgba(255, 71, 87, 0.25);
+      }
+
+      .risk-high {
+        background: rgba(255, 165, 2, 0.1);
+        color: var(--amber);
+        border: 1px solid rgba(255, 165, 2, 0.2);
+      }
+
+      .item-count {
+        font-family: var(--mono);
+        font-size: 0.65rem;
+        color: var(--text-muted);
+      }
+
+      .chevron {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        transition: transform 0.2s;
+      }
+
+      .category-card.open .chevron {
+        transform: rotate(90deg);
+      }
+
+      .category-body {
+        display: none;
+        border-top: 1px solid var(--border);
+      }
+
+      .category-card.open .category-body {
+        display: block;
+      }
+
+      .checklist-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 0.7rem 1.25rem;
+        border-bottom: 1px solid var(--border);
+        transition: background 0.12s;
+      }
+
+      .checklist-item:last-child {
+        border-bottom: none;
+      }
+
+      .checklist-item:hover {
+        background: var(--teal-glow);
+      }
+
+      .check-box {
+        width: 14px;
+        height: 14px;
+        border: 1px solid var(--border-light);
+        border-radius: 2px;
+        flex-shrink: 0;
+        margin-top: 3px;
+        cursor: pointer;
+        transition: all 0.15s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.55rem;
+        color: transparent;
+      }
+
+      .checklist-item.checked .check-box {
+        background: var(--teal);
+        border-color: var(--teal);
+        color: #090b0e;
+      }
+
+      .checklist-item.checked .item-control {
+        color: var(--text-muted);
+        text-decoration: line-through;
+        text-decoration-color: var(--text-muted);
+      }
+
+      .item-control {
+        font-size: 0.82rem;
+        color: var(--text);
+        line-height: 1.45;
+        flex: 1;
+      }
+
+      .item-rationale {
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        margin-top: 0.2rem;
+        line-height: 1.4;
+      }
+
+      .item-id {
+        font-family: var(--mono);
+        font-size: 0.6rem;
+        color: var(--text-muted);
+        opacity: 0.5;
+        margin-top: 0.25rem;
+      }
+
+      /* PROGRESS */
+      .progress-bar-wrap {
+        margin-bottom: 3rem;
+      }
+
+      .progress-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+      }
+
+      .progress-label {
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        letter-spacing: 0.06em;
+      }
+
+      .progress-count {
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        color: var(--teal);
+      }
+
+      .progress-bar {
+        height: 3px;
+        background: var(--border);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: var(--teal);
+        border-radius: 2px;
+        transition: width 0.3s ease;
+        width: 0%;
+      }
+
+      footer {
+        position: relative;
+        z-index: 1;
+        border-top: 1px solid var(--border);
+        padding: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: gap;
+      }
+
+      .footer-left {
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        color: var(--text-muted);
+      }
+
+      .footer-left a {
+        color: var(--teal);
+        text-decoration: none;
+      }
+
+      .footer-right {
+        font-family: var(--mono);
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        display: flex;
+        gap: 1.5rem;
+      }
+
+      .footer-right a {
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+
+      .footer-right a:hover {
+        color: var(--teal);
+      }
+
+      .reset-btn {
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        background: none;
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        padding: 0.4rem 0.75rem;
+        cursor: pointer;
+        border-radius: 2px;
+        transition: all 0.2s;
+      }
+
+      .reset-btn:hover {
+        border-color: var(--red);
+        color: var(--red);
+      }
+
+      /* print specific styles */
+      @page {
+        margin: 0;
+      }
+
+      @media print {
+        * {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+
+        body::before {
+          display: none;
+        }
+
+        nav,
+        .hero-actions,
+        .progress-bar-wrap,
+        .reset-btn {
+          display: none !important;
+        }
+
+        footer {
+          position: static;
+          border-top: 1px solid var(--border);
+          background: var(--bg-card);
+          page-break-inside: avoid;
+          break-inside: avoid;
+        }
+
+        footer a {
+          color: var(--teal) !important;
+        }
+
+        footer a[href]::after {
+          content: " (" attr(href) ")";
+          font-size: 0.7rem;
+          color: var(--text-muted);
+          word-break: break-all;
+        }
+
+        .hero {
+          padding: 2rem 0 1.5rem;
+          page-break-after: avoid;
+        }
+
+        #full-checklist-label {
+          break-before: page;
+          page-break-before: always;
+          padding-top: 1.5cm;
+        }
+
+        .category-card + .category-card {
+          break-before: page;
+          page-break-before: always;
+          padding-top: 1.5cm;
+        }
+
+        .category-body {
+          display: block !important;
+        }
+
+        .category-header {
+          cursor: default;
+        }
+
+        .category-icon {
+          display: none;
+        }
+
+        .checklist-item {
+          page-break-inside: avoid;
+          break-inside: avoid;
+        }
+
+        .checklist-item:hover {
+          background: none;
+        }
+
+        .top10-grid {
+          page-break-inside: avoid;
+          margin-bottom: 2rem;
+        }
+
+        .stats-bar {
+          margin-bottom: 1.5rem;
+          page-break-after: avoid;
+        }
+
+        body {
+          padding: 1.5cm 2cm;
+        }
+
+        .main {
+          padding: 0 2rem 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a class="nav-logo" href="#">MCP Security Checklist</a>
+      <ul class="nav-links">
+        <li><a href="#checklist">Checklist</a></li>
+        <li>
+          <a
+            href="https://github.com/helixar-ai/mcp-security-checklist/blob/main/checklist.json"
+            >JSON</a
+          >
+        </li>
+        <li>
+          <a
+            href="https://github.com/helixar-ai/mcp-security-checklist/blob/main/checklist.yaml"
+            >YAML</a
+          >
+        </li>
+        <li>
+          <a
+            href="https://github.com/helixar-ai/mcp-security-checklist/blob/main/CONTRIBUTING.md"
+            >Contribute</a
+          >
+        </li>
+      </ul>
+      <a
+        class="nav-github"
+        href="https://github.com/helixar-ai/mcp-security-checklist"
+        target="_blank"
+        >★ Star on GitHub</a
+      >
+    </nav>
+
+    <header class="hero">
+      <div class="hero-tag">Community Security Resource</div>
+      <h1>MCP Security<br /><span>Checklist</span></h1>
+      <p class="hero-desc">
+        A practical, community-maintained security baseline for teams building
+        and deploying Model Context Protocol servers and AI agent
+        infrastructure. Vendor-neutral. Free to use. Open to contributions.
+      </p>
+      <div class="hero-actions">
+        <a href="#checklist" class="btn-primary">Start Checklist</a>
+        <a
+          href="https://github.com/helixar-ai/mcp-security-checklist"
+          class="btn-secondary"
+          target="_blank"
+          >View on GitHub</a
+        >
+      </div>
+    </header>
+
+    <div class="stats-bar">
+      <div class="stat">
+        <div class="stat-value">6</div>
+        <div class="stat-label">Security Domains</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="total-count">40</div>
+        <div class="stat-label">Total Controls</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">2</div>
+        <div class="stat-label">Critical Categories</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">3</div>
+        <div class="stat-label">Audience Tiers</div>
+      </div>
     </div>
-    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-  </div>
 
-  <!-- CATEGORIES -->
-  <div class="section-label">Full Checklist</div>
-  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem;">
-    <h2 style="margin:0">Security Controls</h2>
-    <button class="reset-btn" onclick="resetAll()">Reset Progress</button>
-  </div>
+    <main class="main" id="checklist">
+      <!-- TOP 10 -->
+      <div class="section-label">Quick Start</div>
+      <h2>Top 10 Controls</h2>
+      <div class="top10-grid">
+        <div class="top10-item">
+          <span class="top10-num">01</span
+          ><span class="top10-text"
+            >Never expose MCP over the public internet without mTLS or
+            equivalent.</span
+          >
+        </div>
+        <div class="top10-item">
+          <span class="top10-num">02</span
+          ><span class="top10-text"
+            >Scope every tool to the minimum necessary permissions.</span
+          >
+        </div>
+        <div class="top10-item">
+          <span class="top10-num">03</span
+          ><span class="top10-text"
+            >Validate and sanitize all inputs before they reach tool
+            execution.</span
+          >
+        </div>
+        <div class="top10-item">
+          <span class="top10-num">04</span
+          ><span class="top10-text"
+            >Log every tool invocation with the originating session
+            context.</span
+          >
+        </div>
+        <div class="top10-item">
+          <span class="top10-num">05</span
+          ><span class="top10-text"
+            >Set rate limits on both the MCP server and any downstream APIs it
+            calls.</span
+          >
+        </div>
+        <div class="top10-item">
+          <span class="top10-num">06</span
+          ><span class="top10-text"
+            >Treat agent sessions as untrusted by default — validate intent, not
+            just tokens.</span
+          >
+        </div>
+        <div class="top10-item">
+          <span class="top10-num">07</span
+          ><span class="top10-text"
+            >Separate read and write tools; require explicit approval for write
+            ops in sensitive contexts.</span
+          >
+        </div>
+        <div class="top10-item">
+          <span class="top10-num">08</span
+          ><span class="top10-text"
+            >Rotate credentials used by MCP servers on a defined schedule.</span
+          >
+        </div>
+        <div class="top10-item">
+          <span class="top10-num">09</span
+          ><span class="top10-text"
+            >Monitor for behavioral anomalies: unusual tool chains,
+            high-frequency calls, off-hours access.</span
+          >
+        </div>
+        <div class="top10-item">
+          <span class="top10-num">10</span
+          ><span class="top10-text"
+            >Conduct a tool inventory review before every production
+            deployment.</span
+          >
+        </div>
+      </div>
 
-  <div class="categories" id="categories-container">
-    <!-- Populated by JS -->
-  </div>
+      <!-- PROGRESS -->
+      <div class="progress-bar-wrap">
+        <div class="progress-header">
+          <span class="progress-label">YOUR PROGRESS</span>
+          <span class="progress-count" id="progress-text">0 / 0 completed</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
 
-</main>
+      <!-- CATEGORIES -->
+      <div class="section-label" id="full-checklist-label">Full Checklist</div>
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 1.5rem;
+        "
+      >
+        <h2 style="margin: 0">Security Controls</h2>
+        <button class="reset-btn" onclick="resetAll()">Reset Progress</button>
+      </div>
 
-<footer>
-  <div class="footer-left">
-    Maintained by <a href="https://helixar.ai" target="_blank">Helixar</a> security research &nbsp;·&nbsp;
-    <a href="https://github.com/helixar-ai/mcp-security-checklist" target="_blank">GitHub</a> &nbsp;·&nbsp;
-    MIT License
-  </div>
-  <div class="footer-right">
-    <a href="https://github.com/helixar-ai/mcp-security-checklist/blob/main/CONTRIBUTING.md" target="_blank">Contribute</a>
-    <a href="https://helixar.ai" target="_blank">helixar.ai</a>
-  </div>
-</footer>
+      <div class="categories" id="categories-container">
+        <!-- Populated by JS -->
+      </div>
+    </main>
 
-<script>
-const CATEGORIES = [
-  {
-    id: "auth", icon: "🔑", name: "Authentication & Authorization",
-    risk: "critical", riskLabel: "Critical",
-    items: [
-      { id: "auth-001", control: "Require authentication on all MCP endpoints", rationale: "Unauthenticated tool invocation allows any caller to execute tools." },
-      { id: "auth-002", control: "Use short-lived tokens for agent sessions", rationale: "Long-lived static keys increase exposure window on compromise." },
-      { id: "auth-003", control: "Implement mTLS for server-to-server MCP communication", rationale: "Mutual TLS ensures both parties are authenticated in transit." },
-      { id: "auth-004", control: "Do not embed credentials in agent prompts or tool descriptions", rationale: "Agents can leak credentials in responses or logs." },
-      { id: "auth-005", control: "Use a secrets manager for MCP server credentials", rationale: "Environment variables are frequently exposed in logs or config dumps." },
-      { id: "auth-006", control: "Apply least-privilege scoping to every tool", rationale: "Overprivileged tools expand blast radius on compromise." },
-      { id: "auth-007", control: "Separate read-only and write/execute tools", rationale: "Require explicit elevated authorization for destructive operations." },
-      { id: "auth-008", control: "Enforce per-agent identity on tool invocations", rationale: "Shared credentials prevent individual agent traceability." },
-      { id: "auth-009", control: "Validate tool-level authorization, not just server-level auth", rationale: "Gateway-only checks can be bypassed via direct MCP calls." },
-      { id: "auth-010", control: "Restrict which tools are visible to which agents", rationale: "Tool discovery itself is an attack surface." },
-    ]
-  },
-  {
-    id: "input-validation", icon: "🧹", name: "Input Validation & Prompt Injection",
-    risk: "critical", riskLabel: "Critical",
-    items: [
-      { id: "input-001", control: "Validate structure and type of all tool inputs before execution", rationale: "Unvalidated inputs can cause unexpected behavior or injection." },
-      { id: "input-002", control: "Define and enforce input schemas for every tool", rationale: "Schema enforcement rejects malformed and adversarial inputs early." },
-      { id: "input-003", control: "Set maximum length limits on all string inputs", rationale: "Unbounded inputs can cause resource exhaustion." },
-      { id: "input-004", control: "Separate data from instructions at the tool layer", rationale: "Mixing data and instructions enables prompt injection via retrieved content." },
-      { id: "input-005", control: "Validate output of tool results before passing back to model", rationale: "Tool responses can contain adversarial instructions targeting further agent calls." },
-      { id: "input-006", control: "Require explicit confirmation for irreversible actions", rationale: "Reduces impact of successful prompt injection or misconfiguration." },
-    ]
-  },
-  {
-    id: "tool-exposure", icon: "🧰", name: "Tool & Resource Exposure",
-    risk: "high", riskLabel: "High",
-    items: [
-      { id: "tool-001", control: "Maintain a formal inventory of all exposed tools", rationale: "You cannot secure what you haven't catalogued." },
-      { id: "tool-002", control: "Review tool inventory before every deployment", rationale: "Development tools frequently carry over-permissive access into production." },
-      { id: "tool-003", control: "Expose only tools an agent needs for its current task", rationale: "Minimal tool surface limits blast radius of compromised sessions." },
-      { id: "tool-004", control: "Use separate MCP instances for different agent roles", rationale: "Mixing admin and read-only tools enables privilege escalation." },
-      { id: "tool-005", control: "Apply egress filtering on all external API calls from MCP tools", rationale: "Unfiltered egress enables data exfiltration via tool-initiated calls." },
-    ]
-  },
-  {
-    id: "api-session", icon: "🔌", name: "API Session Security",
-    risk: "high", riskLabel: "High",
-    items: [
-      { id: "session-001", control: "Assign a unique session ID to every agent interaction", rationale: "Session IDs are required to trace multi-step tool chains." },
-      { id: "session-002", control: "Enforce session timeouts", rationale: "Indefinite sessions increase the window for token abuse." },
-      { id: "session-003", control: "Apply rate limits per session and per tool", rationale: "Server-level rate limiting alone is insufficient for agentic workloads." },
-      { id: "session-004", control: "Alert on sustained high-frequency tool calls from a single session", rationale: "Indicates runaway loops, abuse, or compromised agents." },
-      { id: "session-005", control: "Log full request context for every tool call", rationale: "Incomplete logs prevent incident reconstruction." },
-    ]
-  },
-  {
-    id: "monitoring", icon: "📡", name: "Monitoring & Observability",
-    risk: "high", riskLabel: "High",
-    items: [
-      { id: "mon-001", control: "Log every tool invocation with session ID, agent identity, tool name, and timestamp", rationale: "Minimum required data for incident response." },
-      { id: "mon-002", control: "Log tool chain sequences within sessions", rationale: "Unusual chains are a primary detection signal for agentic threats." },
-      { id: "mon-003", control: "Centralize MCP logs into SIEM or log aggregation platform", rationale: "Siloed logs are inaccessible during a server compromise." },
-      { id: "mon-004", control: "Retain logs for a minimum of 90 days", rationale: "Agentic attack chains can take time to fully manifest." },
-      { id: "mon-005", control: "Build a behavioral baseline before relying on anomaly alerts", rationale: "Without a baseline, anomaly detection generates excessive false positives." },
-    ]
-  },
-  {
-    id: "network", icon: "🌐", name: "Network & Infrastructure",
-    risk: "high", riskLabel: "High",
-    items: [
-      { id: "net-001", control: "Do not expose MCP servers directly to the public internet", rationale: "Public exposure dramatically increases attack surface." },
-      { id: "net-002", control: "Place MCP servers behind a gateway or reverse proxy", rationale: "Centralizes TLS termination, auth enforcement, and rate limiting." },
-      { id: "net-003", control: "Apply egress filtering to MCP servers", rationale: "Prevents arbitrary outbound connections and exfiltration." },
-      { id: "net-004", control: "Run MCP server processes as a non-root, dedicated service account", rationale: "Limits blast radius of OS-level compromise." },
-      { id: "net-005", control: "Keep MCP server dependencies up to date", rationale: "Supply chain vulnerabilities in libraries are a real and exploited risk." },
-    ]
-  },
-];
+    <footer>
+      <div class="footer-left">
+        Maintained by
+        <a href="https://helixar.ai" target="_blank">Helixar</a> security
+        research &nbsp;·&nbsp;
+        <a
+          href="https://github.com/helixar-ai/mcp-security-checklist"
+          target="_blank"
+          >GitHub</a
+        >
+        &nbsp;·&nbsp; MIT License
+      </div>
+      <div class="footer-right">
+        <a
+          href="https://github.com/helixar-ai/mcp-security-checklist/blob/main/CONTRIBUTING.md"
+          target="_blank"
+          >Contribute</a
+        >
+        <a href="https://helixar.ai" target="_blank">helixar.ai</a>
+      </div>
+    </footer>
 
-// STATE
-const state = {};
-CATEGORIES.forEach(cat => cat.items.forEach(item => {
-  state[item.id] = false;
-}));
+    <script>
+      const CATEGORIES = [
+        {
+          id: "auth",
+          icon: "🔑",
+          name: "Authentication & Authorization",
+          risk: "critical",
+          riskLabel: "Critical",
+          items: [
+            {
+              id: "auth-001",
+              control: "Require authentication on all MCP endpoints",
+              rationale:
+                "Unauthenticated tool invocation allows any caller to execute tools.",
+            },
+            {
+              id: "auth-002",
+              control: "Use short-lived tokens for agent sessions",
+              rationale:
+                "Long-lived static keys increase exposure window on compromise.",
+            },
+            {
+              id: "auth-003",
+              control: "Implement mTLS for server-to-server MCP communication",
+              rationale:
+                "Mutual TLS ensures both parties are authenticated in transit.",
+            },
+            {
+              id: "auth-004",
+              control:
+                "Do not embed credentials in agent prompts or tool descriptions",
+              rationale: "Agents can leak credentials in responses or logs.",
+            },
+            {
+              id: "auth-005",
+              control: "Use a secrets manager for MCP server credentials",
+              rationale:
+                "Environment variables are frequently exposed in logs or config dumps.",
+            },
+            {
+              id: "auth-006",
+              control: "Apply least-privilege scoping to every tool",
+              rationale:
+                "Overprivileged tools expand blast radius on compromise.",
+            },
+            {
+              id: "auth-007",
+              control: "Separate read-only and write/execute tools",
+              rationale:
+                "Require explicit elevated authorization for destructive operations.",
+            },
+            {
+              id: "auth-008",
+              control: "Enforce per-agent identity on tool invocations",
+              rationale:
+                "Shared credentials prevent individual agent traceability.",
+            },
+            {
+              id: "auth-009",
+              control:
+                "Validate tool-level authorization, not just server-level auth",
+              rationale:
+                "Gateway-only checks can be bypassed via direct MCP calls.",
+            },
+            {
+              id: "auth-010",
+              control: "Restrict which tools are visible to which agents",
+              rationale: "Tool discovery itself is an attack surface.",
+            },
+          ],
+        },
+        {
+          id: "input-validation",
+          icon: "🧹",
+          name: "Input Validation & Prompt Injection",
+          risk: "critical",
+          riskLabel: "Critical",
+          items: [
+            {
+              id: "input-001",
+              control:
+                "Validate structure and type of all tool inputs before execution",
+              rationale:
+                "Unvalidated inputs can cause unexpected behavior or injection.",
+            },
+            {
+              id: "input-002",
+              control: "Define and enforce input schemas for every tool",
+              rationale:
+                "Schema enforcement rejects malformed and adversarial inputs early.",
+            },
+            {
+              id: "input-003",
+              control: "Set maximum length limits on all string inputs",
+              rationale: "Unbounded inputs can cause resource exhaustion.",
+            },
+            {
+              id: "input-004",
+              control: "Separate data from instructions at the tool layer",
+              rationale:
+                "Mixing data and instructions enables prompt injection via retrieved content.",
+            },
+            {
+              id: "input-005",
+              control:
+                "Validate output of tool results before passing back to model",
+              rationale:
+                "Tool responses can contain adversarial instructions targeting further agent calls.",
+            },
+            {
+              id: "input-006",
+              control: "Require explicit confirmation for irreversible actions",
+              rationale:
+                "Reduces impact of successful prompt injection or misconfiguration.",
+            },
+          ],
+        },
+        {
+          id: "tool-exposure",
+          icon: "🧰",
+          name: "Tool & Resource Exposure",
+          risk: "high",
+          riskLabel: "High",
+          items: [
+            {
+              id: "tool-001",
+              control: "Maintain a formal inventory of all exposed tools",
+              rationale: "You cannot secure what you haven't catalogued.",
+            },
+            {
+              id: "tool-002",
+              control: "Review tool inventory before every deployment",
+              rationale:
+                "Development tools frequently carry over-permissive access into production.",
+            },
+            {
+              id: "tool-003",
+              control: "Expose only tools an agent needs for its current task",
+              rationale:
+                "Minimal tool surface limits blast radius of compromised sessions.",
+            },
+            {
+              id: "tool-004",
+              control: "Use separate MCP instances for different agent roles",
+              rationale:
+                "Mixing admin and read-only tools enables privilege escalation.",
+            },
+            {
+              id: "tool-005",
+              control:
+                "Apply egress filtering on all external API calls from MCP tools",
+              rationale:
+                "Unfiltered egress enables data exfiltration via tool-initiated calls.",
+            },
+          ],
+        },
+        {
+          id: "api-session",
+          icon: "🔌",
+          name: "API Session Security",
+          risk: "high",
+          riskLabel: "High",
+          items: [
+            {
+              id: "session-001",
+              control: "Assign a unique session ID to every agent interaction",
+              rationale:
+                "Session IDs are required to trace multi-step tool chains.",
+            },
+            {
+              id: "session-002",
+              control: "Enforce session timeouts",
+              rationale:
+                "Indefinite sessions increase the window for token abuse.",
+            },
+            {
+              id: "session-003",
+              control: "Apply rate limits per session and per tool",
+              rationale:
+                "Server-level rate limiting alone is insufficient for agentic workloads.",
+            },
+            {
+              id: "session-004",
+              control:
+                "Alert on sustained high-frequency tool calls from a single session",
+              rationale:
+                "Indicates runaway loops, abuse, or compromised agents.",
+            },
+            {
+              id: "session-005",
+              control: "Log full request context for every tool call",
+              rationale: "Incomplete logs prevent incident reconstruction.",
+            },
+          ],
+        },
+        {
+          id: "monitoring",
+          icon: "📡",
+          name: "Monitoring & Observability",
+          risk: "high",
+          riskLabel: "High",
+          items: [
+            {
+              id: "mon-001",
+              control:
+                "Log every tool invocation with session ID, agent identity, tool name, and timestamp",
+              rationale: "Minimum required data for incident response.",
+            },
+            {
+              id: "mon-002",
+              control: "Log tool chain sequences within sessions",
+              rationale:
+                "Unusual chains are a primary detection signal for agentic threats.",
+            },
+            {
+              id: "mon-003",
+              control:
+                "Centralize MCP logs into SIEM or log aggregation platform",
+              rationale:
+                "Siloed logs are inaccessible during a server compromise.",
+            },
+            {
+              id: "mon-004",
+              control: "Retain logs for a minimum of 90 days",
+              rationale:
+                "Agentic attack chains can take time to fully manifest.",
+            },
+            {
+              id: "mon-005",
+              control:
+                "Build a behavioral baseline before relying on anomaly alerts",
+              rationale:
+                "Without a baseline, anomaly detection generates excessive false positives.",
+            },
+          ],
+        },
+        {
+          id: "network",
+          icon: "🌐",
+          name: "Network & Infrastructure",
+          risk: "high",
+          riskLabel: "High",
+          items: [
+            {
+              id: "net-001",
+              control:
+                "Do not expose MCP servers directly to the public internet",
+              rationale:
+                "Public exposure dramatically increases attack surface.",
+            },
+            {
+              id: "net-002",
+              control: "Place MCP servers behind a gateway or reverse proxy",
+              rationale:
+                "Centralizes TLS termination, auth enforcement, and rate limiting.",
+            },
+            {
+              id: "net-003",
+              control: "Apply egress filtering to MCP servers",
+              rationale:
+                "Prevents arbitrary outbound connections and exfiltration.",
+            },
+            {
+              id: "net-004",
+              control:
+                "Run MCP server processes as a non-root, dedicated service account",
+              rationale: "Limits blast radius of OS-level compromise.",
+            },
+            {
+              id: "net-005",
+              control: "Keep MCP server dependencies up to date",
+              rationale:
+                "Supply chain vulnerabilities in libraries are a real and exploited risk.",
+            },
+          ],
+        },
+      ];
 
-function totalItems() {
-  return Object.keys(state).length;
-}
+      // STATE
+      const state = {};
+      CATEGORIES.forEach((cat) =>
+        cat.items.forEach((item) => {
+          state[item.id] = false;
+        }),
+      );
 
-function checkedCount() {
-  return Object.values(state).filter(Boolean).length;
-}
+      function totalItems() {
+        return Object.keys(state).length;
+      }
 
-function updateProgress() {
-  const total = totalItems();
-  const done = checkedCount();
-  const pct = total > 0 ? (done / total * 100) : 0;
-  document.getElementById('progress-text').textContent = `${done} / ${total} completed`;
-  document.getElementById('progress-fill').style.width = pct + '%';
-  document.getElementById('total-count').textContent = total;
-}
+      function checkedCount() {
+        return Object.values(state).filter(Boolean).length;
+      }
 
-function toggleItem(id) {
-  state[id] = !state[id];
-  const row = document.querySelector(`[data-item-id="${id}"]`);
-  if (state[id]) {
-    row.classList.add('checked');
-    row.querySelector('.check-box').textContent = '✓';
-  } else {
-    row.classList.remove('checked');
-    row.querySelector('.check-box').textContent = '';
-  }
-  updateProgress();
-}
+      function updateProgress() {
+        const total = totalItems();
+        const done = checkedCount();
+        const pct = total > 0 ? (done / total) * 100 : 0;
+        document.getElementById("progress-text").textContent =
+          `${done} / ${total} completed`;
+        document.getElementById("progress-fill").style.width = pct + "%";
+        document.getElementById("total-count").textContent = total;
+      }
 
-function resetAll() {
-  Object.keys(state).forEach(id => state[id] = false);
-  document.querySelectorAll('.checklist-item').forEach(el => {
-    el.classList.remove('checked');
-    el.querySelector('.check-box').textContent = '';
-  });
-  updateProgress();
-}
+      function toggleItem(id) {
+        state[id] = !state[id];
+        const row = document.querySelector(`[data-item-id="${id}"]`);
+        if (state[id]) {
+          row.classList.add("checked");
+          row.querySelector(".check-box").textContent = "✓";
+        } else {
+          row.classList.remove("checked");
+          row.querySelector(".check-box").textContent = "";
+        }
+        updateProgress();
+      }
 
-function toggleCategory(id) {
-  const card = document.getElementById('cat-' + id);
-  card.classList.toggle('open');
-}
+      function resetAll() {
+        Object.keys(state).forEach((id) => (state[id] = false));
+        document.querySelectorAll(".checklist-item").forEach((el) => {
+          el.classList.remove("checked");
+          el.querySelector(".check-box").textContent = "";
+        });
+        updateProgress();
+      }
 
-function renderCategories() {
-  const container = document.getElementById('categories-container');
-  container.innerHTML = CATEGORIES.map(cat => `
+      function toggleCategory(id) {
+        const card = document.getElementById("cat-" + id);
+        card.classList.toggle("open");
+      }
+
+      function renderCategories() {
+        const container = document.getElementById("categories-container");
+        container.innerHTML = CATEGORIES.map(
+          (cat) => `
     <div class="category-card" id="cat-${cat.id}">
       <div class="category-header" onclick="toggleCategory('${cat.id}')">
         <div class="category-header-left">
@@ -814,7 +1241,9 @@ function renderCategories() {
         </div>
       </div>
       <div class="category-body">
-        ${cat.items.map(item => `
+        ${cat.items
+          .map(
+            (item) => `
           <div class="checklist-item" data-item-id="${item.id}" onclick="toggleItem('${item.id}')">
             <div class="check-box"></div>
             <div>
@@ -823,19 +1252,35 @@ function renderCategories() {
               <div class="item-id">${item.id}</div>
             </div>
           </div>
-        `).join('')}
+        `,
+          )
+          .join("")}
       </div>
     </div>
-  `).join('');
-}
+  `,
+        ).join("");
+      }
 
-renderCategories();
-updateProgress();
+      renderCategories();
+      updateProgress();
 
-// Open first two by default
-document.getElementById('cat-auth').classList.add('open');
-document.getElementById('cat-input-validation').classList.add('open');
-</script>
+      // Open first two by default
+      document.getElementById("cat-auth").classList.add("open");
+      document.getElementById("cat-input-validation").classList.add("open");
 
-</body>
+      // Expand all categories before printing, restore after
+      window.addEventListener("beforeprint", () => {
+        document
+          .querySelectorAll(".category-card")
+          .forEach((el) => el.classList.add("open"));
+      });
+      window.addEventListener("afterprint", () => {
+        document.querySelectorAll(".category-card").forEach((el) => {
+          if (el.id !== "cat-auth" && el.id !== "cat-input-validation") {
+            el.classList.remove("open");
+          }
+        });
+      });
+    </script>
+  </body>
 </html>
