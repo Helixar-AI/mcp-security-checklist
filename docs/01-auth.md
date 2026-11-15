@@ -17,7 +17,7 @@ MCP servers execute tools on behalf of AI agents. Without strong authentication 
 
 - [ ] **Require authentication on all MCP endpoints** — no unauthenticated tool invocation, ever.
 - [ ] **Use short-lived tokens** — API keys and session tokens should expire. Long-lived static keys are a liability.
-- [ ] **Implement mTLS for server-to-server MCP communication** — especially in internal or on-prem deployments.
+- [ ] **Consider mTLS for server-to-server connections that need mutual certificate identity**. This adds transport-level identity checks but does not replace endpoint authorization.
 - [ ] **Do not embed credentials in agent prompts or tool descriptions** — agents can leak these in responses.
 - [ ] **Rotate credentials on a defined schedule** — and immediately on any suspected compromise.
 - [ ] **Use a secrets manager** (e.g., Vault, AWS Secrets Manager) rather than environment variables for MCP server credentials.
@@ -47,7 +47,7 @@ MCP servers execute tools on behalf of AI agents. Without strong authentication 
 ## References
 
 - [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
-- [MCP Specification — Authorization](https://modelcontextprotocol.io/specification)
+- [MCP Authorization (2026-07-28)](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization)
 - [NIST SP 800-63B — Digital Identity Guidelines](https://pages.nist.gov/800-63-3/sp800-63b.html)
 
 ---
