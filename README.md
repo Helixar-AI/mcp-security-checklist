@@ -37,7 +37,7 @@ It is **not** vendor-specific, complete, or a replacement for a full security re
 
 If you do nothing else, cover these:
 
-1. **Never expose MCP over the public internet without mTLS or equivalent.**
+1. **Protect remotely reachable MCP servers with HTTPS, caller authentication, and tool-level authorization.** Consider mTLS when you need mutual certificate identity.
 2. **Scope every tool to the minimum necessary permissions.**
 3. **Validate and sanitize all inputs before they reach tool execution.**
 4. **Log every tool invocation with the originating session context.**
