@@ -21,8 +21,8 @@ categories:
         rationale: Long-lived static keys increase exposure window on compromise
         tags: [authentication, tokens]
       - id: auth-003
-        control: Implement mTLS for server-to-server MCP communication
-        rationale: Mutual TLS ensures both parties are authenticated in transit
+        control: Use mTLS for server-to-server MCP links when mutual certificate identity is required
+        rationale: mTLS authenticates TLS peers when needed but does not replace endpoint authorization for protected HTTP MCP tools
         tags: [authentication, tls, network]
       - id: auth-004
         control: Do not embed credentials in agent prompts or tool descriptions
