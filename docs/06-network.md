@@ -18,7 +18,7 @@ An MCP server is a privileged execution layer. Its network posture determines wh
 - [ ] **Do not expose MCP servers directly to the public internet** unless there is a specific, justified use case.
 - [ ] **Place MCP servers behind a gateway or reverse proxy** that handles TLS termination, auth enforcement, and rate limiting.
 - [ ] **Use TLS 1.2 minimum; prefer TLS 1.3** for all MCP traffic.
-- [ ] **For server-to-server MCP communication, require mTLS** — both sides authenticate.
+- [ ] **Use mTLS for server-to-server links when mutual certificate identity is required**. This is an added control, not a protocol requirement or a replacement for OAuth authorization on protected HTTP MCP requests.
 - [ ] **Apply network-level allow-listing** for which source IPs or CIDR ranges can call the MCP server (where operationally feasible).
 - [ ] **Segment MCP servers into their own network zone** — they should not share a subnet with general application infrastructure.
 
@@ -60,6 +60,7 @@ An MCP server is a privileged execution layer. Its network posture determines wh
 
 ## References
 
+- [MCP Authorization (2026-07-28)](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization)
 - [NIST SP 800-41 — Guidelines on Firewalls and Firewall Policy](https://csrc.nist.gov/publications/detail/sp/800-41/rev-1/final)
 - [CIS Benchmarks for container and cloud hardening](https://www.cisecurity.org/cis-benchmarks)
 
